@@ -1,1 +1,3 @@
-simple bank project for fun
+# The Great Bank  
+
+Simple bank system for fun.
