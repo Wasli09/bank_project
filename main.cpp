@@ -15,6 +15,7 @@ bank *first_account{NULL};
 void badInput();
 bool account_manager(bank *current_account);
 void account_access_result(bool result);
+void cleanUp();
 
 
 class access_to_account{
@@ -23,18 +24,20 @@ class access_to_account{
         std::string pass{};
 	public:
         bank *register_to_account();
-		bank *login_to_account();
+        bank *login_to_account();
     };
 
 int main(){
     std::string input{};
     access_to_account access;
+
 	while(true){
-        std::cout << "WELCOME TO THE GREAT BANK \n"
+
+        std::cout << "\tWELCOME TO THE GREAT BANK \n"
 		<< "you can (register) to create a new accoutn \n"
 		<< "you can (login) to an already existing account \n"
 		<< "or you can (exit) the bank \n"
-		<< "what would you like to do::";	
+		<< "what would you like to do :";
 		std::cin >> input;
 
 		if(input == "register"){
@@ -51,6 +54,7 @@ int main(){
                 std::cout << "are you sure (y/n):";
                 std::cin >> si;
                 if(si == 'y'){
+                    cleanUp();
                     return 0;
                 }
                 else if(si == 'n'){
@@ -65,7 +69,6 @@ int main(){
             badInput();
         }
 	}
-return 0;
 }
 
 
@@ -77,9 +80,9 @@ bool account_manager(bank *current_account){
 		return false;
 	}	
 	else{
+			std::cout << "\tYOU HAVE ACCECED YOU ACCOUNT SUCCESFULY \n";
 		while(run){
-			std::cout << "YOU HAVE ACCECED YOU ACCOUNT SUCCESFULY \n"
-			<< "WHAT WOULD YOU LIKE TO DO \n"
+			std::cout << "WHAT WOULD YOU LIKE TO DO \n"
 			<< "(s)how ballace \n"
 			<< "(a)dd money \n"
 			<< "(w)ithraw money \n"
@@ -169,7 +172,7 @@ bank *access_to_account::register_to_account(){
 
 		else{
 			current_account = first_account;
-			while(current_account->next != NULL){
+			while(current_account != NULL){
                 if(current_account->username == usr){
                     exist = true;
                     break;
@@ -177,12 +180,12 @@ bank *access_to_account::register_to_account(){
 				    current_account = current_account->next;
 			}
             if(exist == false){
-			    current_account->next = new_account;
+			    current_account = new_account;
 			    new_account = NULL;
-			    return current_account->next;
+			    return current_account;
             }
             else{
-                delete(new_account);
+                delete new_account;
                 new_account = NULL;
                 current_account =  NULL; 
                 return NULL;
@@ -229,3 +232,20 @@ bank *access_to_account::login_to_account(){
             }
 		}
 	}
+
+void cleanUp(){
+    bank *account = first_account;
+    bank *tmp{};
+    if ( account == NULL){
+        std::cout << "there is no accounts\n";
+    }
+    else{
+        while( account != NULL ){
+        tmp = account;
+        account = account->next;
+        delete tmp;
+        }
+        std::cout << "all account has been deleted\n";
+    }
+}
+
